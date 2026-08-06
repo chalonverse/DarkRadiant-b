@@ -1111,6 +1111,9 @@
     <ClCompile Include="..\..\radiantcore\skins\Doom3ModelSkin.cpp">
       <Filter>src\skins</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\radiantcore\model\import\GltfModelLoader.cpp">
+      <Filter>src\model\import</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\radiantcore\modulesystem\ModuleLoader.h">
@@ -2261,6 +2264,9 @@
     </ClInclude>
     <ClInclude Include="..\..\radiantcore\selection\SceneSelectionTesters.h">
       <Filter>src\selection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\radiantcore\model\import\GltfModelLoader.h">
+      <Filter>src\model\import</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
