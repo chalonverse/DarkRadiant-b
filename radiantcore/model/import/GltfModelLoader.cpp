@@ -24,48 +24,75 @@ namespace model
 
     IModelPtr GltfModelLoader::loadModelFromPath(const std::string& path)
     {
-        //// Open an ArchiveFile to load
-        //auto file = path_is_absolute(path.c_str()) ?
-        //    GlobalFileSystem().openFileInAbsolutePath(path) :
-        //    GlobalFileSystem().openFile(path);
+        // Open an ArchiveFile to load
+        auto file = path_is_absolute(path.c_str()) ?
+            GlobalFileSystem().openFileInAbsolutePath(path) :
+            GlobalFileSystem().openFile(path);
         
-        //if (!file)
-        //{
-        //    rError() << "Failed to load model " << path << std::endl;
-        //    return IModelPtr();
-        //}
-        //
-        //// Load the model data from the given stream
-        //archive::ScopedArchiveBuffer data(*file);
-        //
-        //return IModelPtr();
+        if (!file)
+        {
+            rError() << "Failed to load model " << path << std::endl;
+            return IModelPtr();
+        }
+
         
+        //TODO: find a way to append the full absolute file path to the relative path.
+
         const auto gltfFileOpt = gltf::load("D:\\games\\monstergame\\base\\models\\radio.glb");
         if (!gltfFileOpt)
         {
             //Failed to load
+            rError() << "Failed to parse GLB file " << path << std::endl;
             return IModelPtr();
         }
         
         const auto& gltfFile = *gltfFileOpt;
-        if (gltfFile.scenes.size() != 1)
+        if (gltfFile.scenes.size() > 1)
         {
             //Too many scenes
+            rError() << "GLB file has too many scenes " << path << std::endl;
             return IModelPtr();
         }
 
-        for (size_t i = 0; i < gltfFile.materials.size(); ++i) {
-            const auto& gmaterial = gltfFile.materials[i];
+        //gltfFile.materials.size()        
+        
+        //Note: "mesh" = how many individual blender objects there are.
+        //so if the model consists of 3 objects, then: you have 3 meshes.
 
-            printf("Material name: %s", gmaterial.name);
+        if (gltfFile.meshes.size() <= 0)
+        {
+            //No mesh
+            rError() << "GLB file has no meshes " << path << std::endl;
+            return IModelPtr();
         }
 
-        //TODO
+        for (int i = 0; i < gltfFile.meshes.size(); i++)
+        {
+            if (gltfFile.meshes[i].primitives.size() <= 0)
+            {
+                continue;
+            }
 
+            //TODO: 
+            //parse the gltf model into DarkRadiant's StaticModel
+            //refer to AseModelLoader.cpp FbxModelLoader.cpp for reference
+            
+        }
 
+        
+        
 
+        
 
-        return IModelPtr();
+        std::vector<StaticModelSurfacePtr> staticSurfaces;
+
+        auto staticModel = std::make_shared<StaticModel>(staticSurfaces);
+
+        // Set the filename
+        staticModel->setFilename(os::getFilename(file->getName()));
+        staticModel->setModelPath(path);
+
+        return staticModel; //Return the model.
     }
 
 }
