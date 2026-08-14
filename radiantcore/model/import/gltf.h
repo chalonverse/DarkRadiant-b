@@ -427,7 +427,7 @@ struct Light {
     struct Spot {
         std::optional<float> range; // infinite if undefined
         float innerConeAngle = 0.0f;
-        float outerConeAngle = 0.785398163397448309616; //was: M_PI_4;
+        float outerConeAngle = 0.785398163397448309616f; //was: M_PI_4;
     };
 
     DisplayName name;
