@@ -16,6 +16,25 @@
 #include "gltf/cgltf.h"
 #include "../StaticModelSurface.h"
 
+namespace
+{
+    class ScopeGuard
+    {
+        std::function<void()> mExitFunc;
+    public:
+        ScopeGuard(std::function<void()> exitFunc)
+            :mExitFunc(exitFunc)
+        {
+
+        }
+        
+        ~ScopeGuard()
+        {
+            mExitFunc();
+        }
+    };
+}
+
 namespace model
 {
 
@@ -43,6 +62,10 @@ namespace model
             rError() << "Failed to parse GLB file " << path << std::endl;
             return IModelPtr();
         }
+
+        ScopeGuard freeCGLTF([gltfData] {
+            cgltf_free(gltfData);
+        });
 
         result = cgltf_load_buffers(&options, gltfData, fileName.c_str());
 
